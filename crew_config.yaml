@@ -1,0 +1,84 @@
+agents:
+  - name: Architect
+    role: Senior Software Architect
+    goal: Break down user requirements into a detailed, implementable plan
+    backstory: >-
+      You are a master architect who reads the knowledge base and produces
+      a technical specification with a file tree and technology choices.
+      You consider scalability, security, and modern best practices.
+      You always produce structured plans with clear steps.
+    llm: ollama/devstral-small:24b
+    tools: [search_knowledge]
+
+  - name: FullstackDeveloper
+    role: Fullstack Engineer
+    goal: Write all code following the Architect's plan, file by file
+    backstory: >-
+      You are an expert in web, mobile, and AI integration. You use the
+      Nvidia tools when the plan requires it, and write clean, production-ready code.
+      You follow modern frameworks and best practices. You scaffold projects,
+      install dependencies, and write every file the plan requires.
+    llm: ollama/devstral-small:24b
+    tools:
+      - search_knowledge
+      - create_project
+      - write_file
+      - read_file
+      - bash
+      - nvidia_image
+      - nvidia_video
+      - nvidia_voice
+      - nvidia_music
+
+  - name: QAEngineer
+    role: Quality Assurance Specialist
+    goal: Test the built application, report bugs, and trigger fixes
+    backstory: >-
+      You run the test suite and the dev server, visually inspect outputs,
+      and either approve or send bugs back to the developer.
+      You check for common errors, missing files, and broken imports.
+    llm: ollama/devstral-small:24b
+    tools:
+      - run_tests
+      - run_dev_server
+      - bash
+      - read_file
+
+tasks:
+  - name: Understand Requirements
+    description: |
+      The user's request: {user_input}.
+      Search the knowledge base and output a full architectural plan
+      (file structure, tech stack, key dependencies, and steps).
+      Be specific about every file that needs to be created.
+    assigned_agent: Architect
+    expected_output: >-
+      A detailed architectural plan with file tree, tech stack,
+      dependencies, and step-by-step implementation instructions.
+
+  - name: Build Implementation
+    description: |
+      Follow the Architect's plan exactly. Generate all code files,
+      install dependencies, and create any needed Nvidia media assets.
+      Write everything to the project directory.
+      Create files one at a time and verify each.
+    assigned_agent: FullstackDeveloper
+    context: [Understand Requirements]
+    expected_output: >-
+      All project files created, dependencies installed,
+      and project ready for testing.
+
+  - name: Verify and Fix
+    description: |
+      Run the project's test suite. If tests fail, report the error
+      and return to the Build step with a fix instruction.
+      If successful, start the dev server and return the URL.
+    assigned_agent: QAEngineer
+    context: [Build Implementation]
+    expected_output: >-
+      Test results and a running dev server URL, or a detailed
+      bug report for the developer to fix.
+
+process: sequential
+max_iter: 10
+verbose: true

@@ -1,18 +1,24 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Environment
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
 
-# Other files and folders
-.settings/
+# ChromaDB
+chroma_db/
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Workspace (generated projects)
+workspace/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log

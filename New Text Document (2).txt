@@ -1,0 +1,204 @@
+Now, let’s turn your vision into a bulletproof implementation plan for an antigravity agent – an autonomous agentic system that can build any type of AI, website, or app using your local reasoning model plus the Nvidia API for media generation. I’ll structure this as a task list and configuration file that your agent can execute directly.
+
+🎯 Goal
+Build a free, terminal-based “vibe code” AI assistant that can create:
+
+Websites: portfolio, freelancing platform, e‑commerce, content, social, dating, video chat, AI‑powered, streaming.
+
+Apps: e‑commerce, social, content/video chat, adult games, freelancing, streaming.
+
+AI services: image generation, video generation, voice/music generation (all via your Nvidia API).
+
+The assistant itself will be driven by an antigravity agent – a multi‑agent CrewAI system that plans, codes, reviews, and deploys.
+
+📦 Required Dependencies (for the agent itself)
+Python 3.11+
+
+Ollama (running devstral-small-2:24b or qwen3-coder)
+
+CrewAI
+
+ChromaDB (local vector knowledge base)
+
+Textual (TUI)
+
+requests for Nvidia API calls
+
+Git, Node.js, npm, Flutter/React Native CLIs (optional, for project scaffolding)
+
+🧠 Knowledge Base (curated .md files)
+Create a folder knowledge/ with these files. Each contains architecture decisions, code templates, and Nvidia API patterns:
+
+web_portfolio.md
+
+web_freelancing.md
+
+web_ecommerce.md
+
+web_content_creation.md
+
+web_social_media.md
+
+web_dating.md
+
+web_video_chat.md
+
+web_ai_site.md
+
+web_streaming.md
+
+app_ecommerce.md
+
+app_social_media.md
+
+app_video_chat.md
+
+app_games_adult.md (with legal disclaimers)
+
+app_streaming.md
+
+ai_image_gen.md
+
+ai_video_gen.md
+
+ai_voice_gen.md
+
+ai_music_gen.md
+
+I can draft any of these in full if needed – e.g., complete WebRTC + Nvidia voice integration.
+
+🔧 Tools (to be registered with CrewAI)
+These functions are the “hands” of the agent:
+
+Tool	Description
+search_knowledge(query)	Vector search the local ChromaDB for relevant patterns
+create_project(type, name)	Scaffold a project (Next.js, React Native, Flask, etc.)
+write_file(path, content)	Create/update files
+run_tests()	Execute project test suite
+run_dev_server(port)	Start dev server and return URL
+nvidia_image(prompt)	Call Nvidia SDXL/Picasso, save locally
+nvidia_video(prompt)	Call Nvidia text-to-video
+nvidia_voice(text, voice)	Call Nvidia Riva TTS
+nvidia_music(prompt)	Call Nvidia music generation
+read_file(path)	Return file contents for review
+bash(command)	Run arbitrary commands (in project directory)
+🤖 Antigravity Agent Crew Configuration (crew_config.yaml)
+Define the crew that will execute all tasks. Use CrewAI with a sequential process, but with the ability to loop on errors.
+
+yaml
+agents:
+  - name: Architect
+    role: Senior Software Architect
+    goal: Break down user requirements into a detailed, implementable plan
+    backstory: >-
+      You are a master architect who reads the knowledge base and produces
+      a technical specification with a file tree and technology choices.
+    llm: ollama/devstral-small-2
+    tools: [search_knowledge]
+    
+  - name: FullstackDeveloper
+    role: Fullstack Engineer
+    goal: Write all code following the Architect’s plan, file by file
+    backstory: >-
+      You are an expert in web, mobile, and AI integration. You use the
+      Nvidia tools when the plan requires it, and write clean, production-ready code.
+    llm: ollama/devstral-small-2
+    tools: [search_knowledge, create_project, write_file, read_file, bash,
+            nvidia_image, nvidia_video, nvidia_voice, nvidia_music]
+    
+  - name: QAEngineer
+    role: Quality Assurance Specialist
+    goal: Test the built application, report bugs, and trigger fixes
+    backstory: >-
+      You run the test suite and the dev server, visually inspect outputs,
+      and either approve or send bugs back to the developer.
+    llm: ollama/devstral-small-2
+    tools: [run_tests, run_dev_server, bash]
+    
+tasks:
+  - name: Understand Requirements
+    description: |
+      The user’s request: {user_input}.
+      Search the knowledge base and output a full architectural plan
+      (file structure, tech stack, key dependencies, and steps).
+    assigned_agent: Architect
+    
+  - name: Build Implementation
+    description: |
+      Follow the Architect’s plan exactly. Generate all code files,
+      install dependencies, and create any needed Nvidia media assets.
+      Write everything to the project directory.
+    assigned_agent: FullstackDeveloper
+    context: [Understand Requirements]
+    
+  - name: Verify and Fix
+    description: |
+      Run the project’s test suite. If tests fail, report the error
+      and return to the Build step with a fix instruction.
+      If successful, start the dev server and return the URL.
+    assigned_agent: QAEngineer
+    context: [Build Implementation]
+    
+process: sequential
+max_iter: 10  # prevent infinite loops
+The {user_input} placeholder will be filled by the TUI when you type a command like:
+/build a dating app with video chat.
+
+🖥️ TUI Frontend (Textual)
+A simple textual app that displays:
+
+A chat log with the agent’s thinking steps.
+
+A side panel showing the current knowledge base search results.
+
+A live file tree.
+
+A terminal output pane for dev_server.
+
+Key features:
+
+Stream tokens from the local LLM in real time.
+
+Show Nvidia generation progress (spinner for long operations).
+
+Store all project artifacts in a dedicated workspace/ folder.
+
+🚀 Execution Flow (Antigravity Agent at Work)
+User opens the TUI and types: Build a portfolio website with a contact form.
+
+Architect agent searches web_portfolio.md, retrieves patterns.
+
+Architect outputs a plan (e.g., “Next.js + Tailwind, Netlify hosting, Nodemailer form”).
+
+FullstackDeveloper agent reads the plan, calls create_project("nextjs-portfolio"), then writes pages/index.js, components/..., etc., one file at a time.
+
+QAEngineer runs npm run dev, tests the form, reports success.
+
+TUI shows the live preview URL: http://localhost:3000.
+
+For a request like “Build an AI image generation website”:
+
+The Developer will generate a Next.js API route that calls your Nvidia endpoint securely (the key is never exposed to the frontend).
+
+The agent can even generate a sample hero image using nvidia_image to demonstrate functionality.
+
+📅 Implementation Roadmap (for you to set up the antigravity agent)
+Phase	Task	Est. Time
+1	Install dependencies, set up Ollama, pull model	1 day
+2	Write the 18 knowledge files (I can help draft them)	3–5 days
+3	Implement the tool functions (local file/command tools + Nvidia API)	2–3 days
+4	Build the CrewAI crew with the above YAML/logic	2 days
+5	Create the Textual TUI and integrate the crew	3 days
+6	Test on simple projects (portfolio, AI image site)	2 days
+7	Expand to mobile, real‑time apps, adult games	continuous
+🔐 Final Nvidia API Key Handling
+Store the key in an environment variable (NVIDIA_API_KEY) never in code.
+
+In your tool functions, read it with os.getenv("NVIDIA_API_KEY").
+
+Revoke the key you accidentally shared and generate a new one now.
+
+Once you have the new key, your antigravity agent will be ready to build anything – from a simple blog to a full‑fledged video‑dating app with AI‑generated profile pictures.
+
+Would you like me to draft the complete content of a specific knowledge file (e.g., web_ai_site.md with Nvidia API integration) or provide a Python skeleton for the Tool functions?
+
